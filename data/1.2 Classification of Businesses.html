@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Classification of Businesses",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "Public sector firms are owned and controlled by the ___.",
+            "answer": "Government",
+            "hint": "It's the entity responsible for managing the country's public resources."
+        },
+        {
+            "question": "Private sector firms are owned and controlled by firms and private individuals such as entrepreneurs and ___.",
+            "answer": "shareholders",
+            "hint": "These individuals hold shares in the company."
+        },
+        {
+            "question": "Privatisation occurs when government-owned firms are sold to the ___.",
+            "answer": "private sector",
+            "hint": "This sector focuses on profit maximization."
+        },
+        {
+            "question": "Public sector firms often have their main goal as providing a ___.",
+            "answer": "service",
+            "hint": "It's a non-profit-oriented objective."
+        },
+        {
+            "question": "The main objective of most private sector organisations is ___.",
+            "answer": "profit maximisation",
+            "hint": "This objective relates to increasing financial earnings."
+        },
+        {
+            "question": "Public sector firms can operate on a local, regional, or national government level, an example of a local one is ___.",
+            "answer": "Transport for London",
+            "hint": "This service provides public transportation in an international city."
+        },
+        {
+            "question": "An example of a regional public sector firm is the Agricultural State Service in ___.",
+            "answer": "India",
+            "hint": "This country is part of South Asia."
+        },
+        {
+            "question": "An example of a national public sector firm is Caribbean ___.",
+            "answer": "Airlines",
+            "hint": "This company provides national and international air travel services."
+        },
+        {
+            "question": "Types of business ownership in the private sector can range from sole traders to partnerships to company ___.",
+            "answer": "shareholders",
+            "hint": "These individuals own a portion of the company through shares."
+        },
+        {
+            "question": "Governments may own firms operating in strategic industries such as defence and ___.",
+            "answer": "energy",
+            "hint": "This industry is essential for powering homes and businesses."
+        },
+        {
+            "question": "Government ownership allows control over sectors vital to national security and ___.",
+            "answer": "economic stability",
+            "hint": "This concept relates to maintaining a steady economy."
+        },
+        {
+            "question": "Government-owned firms ensure that critical services are ___.",
+            "answer": "accessible",
+            "hint": "This means these services can be easily reached and used by the public."
+        },
+        {
+            "question": "Government-owned firms can also play a role in promoting ___.",
+            "answer": "employment",
+            "hint": "This concept involves creating job opportunities."
+        },
+        {
+            "question": "Privatisation can lead to a portion of a government firm being sold, leaving a percentage like Singapore Airlines, where the government owns ___.",
+            "answer": "55%",
+            "hint": "It's slightly more than half ownership."
+        },
+        {
+            "question": "Public firms exist to ensure service provision of goods that are not profitable enough to be provided in the ___.",
+            "answer": "private sector",
+            "hint": "This sector pursues profit."
+        },
+        {
+            "question": "Public sector firms' operations may prioritize social over ___.",
+            "answer": "economic gain",
+            "hint": "This term relates to financial earnings."
+        },
+        {
+            "question": "Governments can use public firms to stimulate economic activity and support industries for overall growth and ___.",
+            "answer": "stability",
+            "hint": "This term implies a steady and enduring condition."
+        },
+        {
+            "question": "Public sector ownership helps protect strategic industries, like energy, and ensure national ___.",
+            "answer": "security",
+            "hint": "This term concerns the safety of a nation."
+        },
+        {
+            "question": "By investing in enterprises, governments can support industries that contribute to economic ___.",
+            "answer": "development",
+            "hint": "This term involves growth, especially in productivity and technological advancement."
+        },
+        {
+            "question": "Government-owned firms provide essential public services such as ___.",
+            "answer": "water supply",
+            "hint": "This service is necessary for daily life and hygiene."
+        },
+        {
+            "question": "When governments own firms, it allows them to exert control over sectors vital for national security and ___.",
+            "answer": "public interest",
+            "hint": "This involves the welfare and well-being of the general population."
+        },
+        {
+            "question": "In privatisation, governments can influence decision-making by retaining a share, such as Singapore Airlines, which is ___ government owned.",
+            "answer": "55%",
+            "hint": "It's a majority stake."
+        },
+        {
+            "question": "Public sector firms are often referred to as state-owned enterprises or ___.",
+            "answer": "government corporations",
+            "hint": "These entities are fully or partially owned by the state."
+        },
+        {
+            "question": "Through public firms, governments can stimulate ___.",
+            "answer": "economic activity",
+            "hint": "This involves the production, distribution, and consumption of goods and services."
+        },
+        {
+            "question": "One key reason why public firms exist is to ensure that essential __ is accessible to everyone.",
+            "answer": "public service",
+            "hint": "Services like healthcare and transportation that societal members widely need."
+        },
+        {
+            "question": "Public firms can play a role in promoting economic development and ___.",
+            "answer": "job creation",
+            "hint": "This term involves generating employment opportunities for individuals."
+        },
+        {
+            "question": "Ownership of firms in strategic industries allows the government to exert control over ___ vital to national security.",
+            "answer": "sectors",
+            "hint": "These are distinct parts of the nation's economy."
+        },
+        {
+            "question": "Privatised firms often improve efficiency and productivity compared to their ___.",
+            "answer": "public sector",
+            "hint": "These firms are owned and run by the government."
+        },
+        {
+            "question": "Strategic industries in government control include defence and ___.",
+            "answer": "energy production",
+            "hint": "This type of industry is crucial for generating electricity and fueling transportation."
+        },
+        {
+            "question": "Governments establish public firms to ensure that critical services are provided and accessible, prioritizing social over ___.",
+            "answer": "profit",
+            "hint": "This term refers to financial earnings."
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>
