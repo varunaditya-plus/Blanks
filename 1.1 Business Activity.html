@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Adding Value in Business",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "Adding value allows a business to charge a higher selling ___.",
+            "answer": "price",
+            "hint": "It's the cost to the customer."
+        },
+        {
+            "question": "Apple uses innovative design to enhance product ___.",
+            "answer": "branding",
+            "hint": "This is how customers perceive the company's reputation."
+        },
+        {
+            "question": "Persil tablets offer a more convenient option by preventing ___.",
+            "answer": "spillage",
+            "hint": "This happens when liquid is not contained."
+        },
+        {
+            "question": "Quality materials and good marketing help Apple charge a higher ___.",
+            "answer": "price",
+            "hint": "This is the amount paid by consumers."
+        },
+        {
+            "question": "MoonPig birthday cards can be completely ___.",
+            "answer": "customised",
+            "hint": "Tailored to suit personal needs or preferences."
+        },
+        {
+            "question": "Samsung Galaxy Watch 5 has robust health tracking tools and an amazing ___.",
+            "answer": "screen",
+            "hint": "The display you view information on."
+        },
+        {
+            "question": "Unique selling points help businesses gain a competitive ___.",
+            "answer": "advantage",
+            "hint": "This is an edge over competitors."
+        },
+        {
+            "question": "Businesses may choose to improve packaging if the increase in selling price outweighs the added ___.",
+            "answer": "cost",
+            "hint": "This is the expense incurred."
+        },
+        {
+            "question": "Jo Malone's beautiful packaging contributes to the product's perceived ___.",
+            "answer": "quality",
+            "hint": "This refers to the standard of the item."
+        },
+        {
+            "question": "Branding, convenience, quality, and unique selling points are methods to increase added ___.",
+            "answer": "value",
+            "hint": "This is what you add to make something worth more."
+        },
+        {
+            "question": "Offering tablets instead of liquid is an example of adding through product ___.",
+            "answer": "convenience",
+            "hint": "This makes the product easy and saving time for customers."
+        },
+        {
+            "question": "MoonPig gains a competitive edge by allowing card customization, making it a significant USP, where USP stands for ___.",
+            "answer": "Unique Selling Point",
+            "hint": "A feature that distinguishes a product."
+        },
+        {
+            "question": "Samsung Galaxy Watch 5 features allow the company to charge a higher ___.",
+            "answer": "price",
+            "hint": "The amount for which something is sold."
+        },
+        {
+            "question": "Apple can charge a higher price due to the superior perception created by their ___.",
+            "answer": "brand",
+            "hint": "This is a name, term, design, symbol, or other feature that identifies one seller's goods."
+        },
+        {
+            "question": "Customisation is a strong USP for MoonPig due to the options in size, colour, and ___.",
+            "answer": "design",
+            "hint": "The appearance or style of a product."
+        },
+        {
+            "question": "Packaged products can be sold at a higher price if the target market values the improved ___.",
+            "answer": "aesthetics",
+            "hint": "This relates to how appealing something looks."
+        },
+        {
+            "question": "Improving the packaging costs £1 per unit but increases selling price by £1.40 per unit, thereby enhancing ___.",
+            "answer": "profitability",
+            "hint": "This involves the financial gains from a product."
+        },
+        {
+            "question": "Customers pay more for Jo Malone products because of the exciting opening ___.",
+            "answer": "experience",
+            "hint": "This refers to the process or event of engaging with the product."
+        },
+        {
+            "question": "A unique selling point is critical to a firm’s competitive strategy and market ___.",
+            "answer": "position",
+            "hint": "This is the approach and standing in the market."
+        },
+        {
+            "question": "The competitive advantage gained by Samsung is partly due to the watch's ___.",
+            "answer": "design",
+            "hint": "How the product looks and functions."
+        },
+        {
+            "question": "Adopting new packaging that adds value is justified if the increase in selling price exceeds the increase in ___.",
+            "answer": "costs",
+            "hint": "The financial expenditure involved."
+        },
+        {
+            "question": "MoonPig can charge higher prices due to the ___ level of customisation offered.",
+            "answer": "high",
+            "hint": "The opposite of low or simple."
+        },
+        {
+            "question": "Samsung's health tracking tools are impressive, contributing to their ___.",
+            "answer": "feature set",
+            "hint": "This is the complete list of functionalities offered."
+        },
+        {
+            "question": "Products with superior branding can command a significant premium over similar products, improving perceived ___.",
+            "answer": "value",
+            "hint": "This is the importance or worth of the product."
+        },
+        {
+            "question": "Increasing value through unique selling points may require initial cost outlay for long-term ___.",
+            "answer": "gains",
+            "hint": "The benefit or profit attained."
+        },
+        {
+            "question": "High-quality packaging improves customer excitement and product ___.",
+            "answer": "engagement",
+            "hint": "This is how much consumers interact with and are interested in the product."
+        },
+        {
+            "question": "Differentiated products that offer unique value to customers are often a result of strategic ___.",
+            "answer": "innovation",
+            "hint": "This involves the process of creating new methods, ideas, or products."
+        },
+        {
+            "question": "The benefits from adding value must be weighed against the potential for increased ___.",
+            "answer": "expenses",
+            "hint": "These are the costs involved in a new initiative."
+        },
+        {
+            "question": "Persil increased the selling price of their tablets due to added convenience, which is an aspect of product ___.",
+            "answer": "differentiation",
+            "hint": "This is the process of distinguishing a product from others."
+        },
+        {
+            "question": "To improve profitability, the increased cost of a new method should not exceed the increase in selling ___.",
+            "answer": "price",
+            "hint": "The cost at which a product is sold to customers."
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>
