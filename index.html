@@ -20,13 +20,15 @@
 <body class="bg-gray-100 font-semibold" style="font-family: 'Quicksand';">
     <div class="h-full w-full p-32">
         <h1 class="text-3xl font-bold">Business</h1>
-        <div class="flex flex-col md:flex-row gap-2 unit" data-unit="1.1 Business Activity"></div>
-        <div class="flex flex-col md:flex-row gap-2 unit" data-unit="1.2 Classification of Businesses"></div>
+        <div class="unit" data-unit="1.1 Business Activity"></div>
+        <div class="unit" data-unit="1.2 Classification of Businesses"></div>
     </div>
 
     <script>
         document.querySelectorAll('.unit').forEach(unit => {
+            unit.className = 'flex flex-col md:flex-row gap-2 mb-2';
             const unitData = unit.getAttribute('data-unit')
+
             const quizButton = document.createElement('button');
             quizButton.className = 'bg-blue-500 text-white p-2 w-full md:w-[85%] bt1 rounded-lg shadow-md hover:bg-blue-600 transition duration-100 ease-out quiz';
             quizButton.onclick = () => window.location.href = `data/${unitData}.html`;
