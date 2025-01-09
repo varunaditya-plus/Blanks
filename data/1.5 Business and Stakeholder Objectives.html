@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Business and Stakeholder Objectives",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "___% of UK start-ups fail within their first three years.",
+            "answer": "60",
+            "hint": "More than half."
+        },
+        {
+            "question": "Businesses often achieve growth by increasing ___.",
+            "answer": "sales",
+            "hint": "It's the revenue stream they aim to boost."
+        },
+        {
+            "question": "If market share is increasing, it means that the firm is competing ___ with rivals.",
+            "answer": "effectively",
+            "hint": "Synonym for successfully."
+        },
+        {
+            "question": "Public sector objectives often focus on providing a service to the ___ rather than profit.",
+            "answer": "community",
+            "hint": "Local people or your neighborhood."
+        },
+        {
+            "question": "A common objective for the private sector is ___ maximisation.",
+            "answer": "profit",
+            "hint": "Financial gain focus."
+        },
+        {
+            "question": "A shareholder's primary objective is to maximise their returns on ___.",
+            "answer": "investment",
+            "hint": "What they put into a company expecting future benefits."
+        },
+        {
+            "question": "For employees, their primary objective is to earn a ___ and have a safe working environment.",
+            "answer": "living",
+            "hint": "What you use to pay your expenses."
+        },
+        {
+            "question": "Managers aim to minimise ___ while ensuring company efficiency.",
+            "answer": "costs",
+            "hint": "Expenses or outlays."
+        },
+        {
+            "question": "Suppliers' primary objective is to sell their products or services and make a ___.",
+            "answer": "profit",
+            "hint": "Economic gain."
+        },
+        {
+            "question": "Customers want high-quality products at a ___ price.",
+            "answer": "fair",
+            "hint": "Equitable or reasonable."
+        },
+        {
+            "question": "Pressure groups' primary aim is to promote a specific ___ or agenda.",
+            "answer": "cause",
+            "hint": "A social or environmental issue they support."
+        },
+        {
+            "question": "The local community wants businesses to have a positive ___ on the community.",
+            "answer": "impact",
+            "hint": "Effect or influence."
+        },
+        {
+            "question": "Governments want companies to operate within the law and contribute to the ___.",
+            "answer": "economy",
+            "hint": "The system of goods and services and how they are exchanged."
+        },
+        {
+            "question": "Avoid suggesting that making as much profit as possible is always the most likely ___ of a business.",
+            "answer": "objective",
+            "hint": "Purpose or goal."
+        },
+        {
+            "question": "A customer of Nike might want the company to deal promptly with customer ___ issues.",
+            "answer": "concerns",
+            "hint": "They are often complaints or queries."
+        },
+        {
+            "question": "The government is responsible for creating and enforcing ___ that affect businesses.",
+            "answer": "laws",
+            "hint": "Legal rules."
+        },
+        {
+            "question": "Social objectives include improving the range of activities available to ___ such as public libraries.",
+            "answer": "society",
+            "hint": "Everyone in a community or country."
+        },
+        {
+            "question": "Increase in sales can result from persuading customers to buy products more often or in greater ___.",
+            "answer": "quantities",
+            "hint": "Amounts or volumes."
+        },
+        {
+            "question": "Financial security allows businesses to have reserve funds for unexpected ___.",
+            "answer": "emergencies",
+            "hint": "Crisis or urgent needs."
+        },
+        {
+            "question": "As businesses grow, their objectives may shift from survival to growth and profit ___.",
+            "answer": "maximisation",
+            "hint": "Maximizing financial outcomes."
+        },
+        {
+            "question": "Investors in companies aim to generate a high return on their ___.",
+            "answer": "investment",
+            "hint": "Capital put into a project expecting returns."
+        },
+        {
+            "question": "The government wants firms to pay taxes, create jobs, and comply with ___ regulations.",
+            "answer": "environmental",
+            "hint": "Relating to nature preservation."
+        },
+        {
+            "question": "Shareholders want a business to be ___.",
+            "answer": "profitable",
+            "hint": "Financially successful."
+        },
+        {
+            "question": "Suppliers want to establish a long-term ___ with a company.",
+            "answer": "relationship",
+            "hint": "Connection or partnership."
+        },
+        {
+            "question": "Managers at a company aim to meet the business's goals and ___.",
+            "answer": "objectives",
+            "hint": "Predetermined targets or aims."
+        },
+        {
+            "question": "Pressure groups aim to influence the policies and actions of businesses or ___.",
+            "answer": "governments",
+            "hint": "Political entities making laws."
+        },
+        {
+            "question": "The government promotes the public good and protects the interests of ___.",
+            "answer": "citizens",
+            "hint": "People living in a country."
+        },
+        {
+            "question": "High-speed rail projects like HS2 face opposition due to potential ___ damage.",
+            "answer": "environmental",
+            "hint": "Impact on nature."
+        },
+        {
+            "question": "Negative ___ returns in the public sector can still be an objective due to societal benefits.",
+            "answer": "financial",
+            "hint": "Referring to monetary gains or losses."
+        },
+        {
+            "question": "Local communities favor businesses that are environmentally ___ and contribute to local causes.",
+            "answer": "responsible",
+            "hint": "Accountable or conscientious."
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>

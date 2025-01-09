@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Entrepreneurship and Business Growth",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "An entrepreneur is someone who is willing to create a ___________________.",
+            "answer": "new business idea or invention",
+            "hint": "Innovation and initiation"
+        },
+        {
+            "question": "Entrepreneurs take risks by investing their ___________________ into new ventures.",
+            "answer": "life savings",
+            "hint": "Personal and financial commitment"
+        },
+        {
+            "question": "A critical skill for entrepreneurs is being able to make ___________________ that determine the success or failure of their business.",
+            "answer": "business decisions",
+            "hint": "Choices affecting business outcomes"
+        },
+        {
+            "question": "When Michael Dell started his company, he needed to gather resources such as computers, software, and ___________________.",
+            "answer": "employees",
+            "hint": "Workforce"
+        },
+        {
+            "question": "Introducing new products or entering new markets involves taking ___________________.",
+            "answer": "risks",
+            "hint": "Uncertainty for innovation"
+        },
+        {
+            "question": "Ben Francis started Gymshark by making gym clothes in his parents garage using a ___________________.",
+            "answer": "sewing machine",
+            "hint": "Manual tool for fabric assembly"
+        },
+        {
+            "question": "To avoid business failure, producing a ___________________ helps to plan all aspects of the business.",
+            "answer": "business plan",
+            "hint": "Strategic document outlining business operations"
+        },
+        {
+            "question": "Entrepreneurs must use a combination of market research, creativity, and ___________________ to make informed decisions.",
+            "answer": "business skill",
+            "hint": "Necessary ability for business operation"
+        },
+        {
+            "question": "One element of a business plan is to clearly state the business ___________________ to attract investors.",
+            "answer": "idea",
+            "hint": "Central concept or vision"
+        },
+        {
+            "question": "The section of a business plan about who the business is aimed at is called the ___________________.",
+            "answer": "target market",
+            "hint": "Intended audience or consumers"
+        },
+        {
+            "question": "Forecast revenue in a business plan helps in planning for ___________________ levels.",
+            "answer": "break even",
+            "hint": "Financial threshold for profitability"
+        },
+        {
+            "question": "An important skill for entrepreneurs is being a persuasive ___________________.",
+            "answer": "communicator",
+            "hint": "Effective verbal and non-verbal expression"
+        },
+        {
+            "question": "High value output can occur in businesses with very few ___________________.",
+            "answer": "employees",
+            "hint": "Staff required for operations"
+        },
+        {
+            "question": "Starting a business is often the ___________________ of a single entrepreneur.",
+            "answer": "responsibility",
+            "hint": "Obligation or duty"
+        },
+        {
+            "question": "During rapid growth, businesses may face ___________________ of scale.",
+            "answer": "diseconomies",
+            "hint": "Inefficiencies when expanding"
+        },
+        {
+            "question": "Horizontal integration involves the merger of firms at the same stage of the ___________________ process.",
+            "answer": "production",
+            "hint": "Manufacturing or creation chain"
+        },
+        {
+            "question": "Creating value for customers is a main goal of successful ___________________.",
+            "answer": "entrepreneurs",
+            "hint": "Business founders or innovators"
+        },
+        {
+            "question": "Larger firms should monitor market power to prevent it being ___________________.",
+            "answer": "abused",
+            "hint": "Misused or exploited"
+        },
+        {
+            "question": "The internet offers low cost access to markets, beneficial for ___________________ businesses.",
+            "answer": "small",
+            "hint": "Businesses with limited resources"
+        },
+        {
+            "question": "Harrogate Gin showed creativity by switching to hand sanitiser during a market ___________________.",
+            "answer": "need",
+            "hint": "Requirement or demand"
+        },
+        {
+            "question": "The face-to-face communication of smaller firms can help build strong ___________________.",
+            "answer": "relationships",
+            "hint": "Connections with customers"
+        },
+        {
+            "question": "External factors such as changes in ___________________ can pressure businesses into difficult changes.",
+            "answer": "laws",
+            "hint": "Regulations or statutes"
+        },
+        {
+            "question": "A niche market may have a small market size but potential for high ___________________.",
+            "answer": "profits",
+            "hint": "Financial gain"
+        },
+        {
+            "question": "In taking effective business decisions, there is often a reliance on strong ___________________.",
+            "answer": "coordination",
+            "hint": "Organization or management"
+        },
+        {
+            "question": "Poor management can lead to increased ___________________ for a business.",
+            "answer": "costs",
+            "hint": "Expenditures"
+        },
+        {
+            "question": "Low-interest start-up loans from the government can assist in creating ___________________.",
+            "answer": "jobs",
+            "hint": "Employment opportunities"
+        },
+        {
+            "question": "One feature of an enterprise zone is to offer tax ___________________ to businesses.",
+            "answer": "breaks",
+            "hint": "Reductions in tax responsibility"
+        },
+        {
+            "question": "The number of employees used to be a common measure of business ___________________.",
+            "answer": "size",
+            "hint": "Extent or magnitude"
+        },
+        {
+            "question": "Small businesses commonly struggle with ___________________ cash flow problems due to rapid expansion.",
+            "answer": "high",
+            "hint": "Substantial financial challenges"
+        },
+        {
+            "question": "A key factor for business failure is often a lack of access to adequate ___________________.",
+            "answer": "finance",
+            "hint": "Funds or capital"
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>

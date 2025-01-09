@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Business Structures and Ownership",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "Private limited companies and public limited companies offer the protection of ___ liability to their owners.",
+            "answer": "limited",
+            "hint": "The liability type where owners can only lose the money they've invested."
+        },
+        {
+            "question": "Unlimited liability means that there is no legal distinction between the ___ and the business.",
+            "answer": "owners",
+            "hint": "Refers to the people who own the business."
+        },
+        {
+            "question": "In most cases, shareholders are not held responsible for unlawful acts committed by those connected with the ___ .",
+            "answer": "business",
+            "hint": "The entity shareholders invest in."
+        },
+        {
+            "question": "To incorporate a company is a process that involves creating a distinct legal ___ for the business.",
+            "answer": "entity",
+            "hint": "Refers to a separate legal existence."
+        },
+        {
+            "question": "Public limited companies must publish their annual reports and hold a(n) ___ each year.",
+            "answer": "AGM",
+            "hint": "A meeting that must be held annually for shareholders."
+        },
+        {
+            "question": "A franchise guarantees an exclusive geographical ___ to the franchisee so competition is limited.",
+            "answer": "area",
+            "hint": "Refers to a specific region or market space."
+        },
+        {
+            "question": "Joint ventures allow partners to benefit from shared expertise and ___ .",
+            "answer": "resources",
+            "hint": "Items or support that can be used by both parties."
+        },
+        {
+            "question": "Incorporated companies reduce the ___ and liability to the business owners.",
+            "answer": "risk",
+            "hint": "What is minimized in terms of financial exposure for owners?"
+        },
+        {
+            "question": "A ready-made, recognized brand name is one advantage of purchasing a ___ .",
+            "answer": "franchise",
+            "hint": "A type of business model often linked to well-known brands."
+        },
+        {
+            "question": "In a public limited company, shares can be sold on the ___ .",
+            "answer": "stock exchange",
+            "hint": "Marketplace for buying and selling shares."
+        },
+        {
+            "question": "A venture can be formed with local partners to gain ___ expertise and resources.",
+            "answer": "joint",
+            "hint": "Refers to partnership in business where both parties contribute."
+        },
+        {
+            "question": "The cost of forming a private limited company is higher compared to starting as a ___ .",
+            "answer": "sole trader",
+            "hint": "A business structure with a single ownership."
+        },
+        {
+            "question": "Government ownership in certain crucial industries can provide security and access to ___ for the public.",
+            "answer": "services",
+            "hint": "What public corporations aim to provide to citizens."
+        },
+        {
+            "question": "An entrepreneur may incorporate a business to provide more financial ___ due to limited liability.",
+            "answer": "security",
+            "hint": "What a business gains when the owner's liability is limited to their investment."
+        },
+        {
+            "question": "In a limited liability company, if the business fails, owners lose their investment but not their personal ___ .",
+            "answer": "assets",
+            "hint": "What owners don't risk losing in case of company failure."
+        },
+        {
+            "question": "Selling shares in a public limited company spreads the ___ among a larger group.",
+            "answer": "risk",
+            "hint": "This is distributed among more shareholders when shares are public."
+        },
+        {
+            "question": "The managing director in a company often holds significant ___ in decision-making.",
+            "answer": "control",
+            "hint": "Refers to the level of influence one has over business decisions."
+        },
+        {
+            "question": "Incorporating a business creates a separate legal ___ from its owners.",
+            "answer": "entity",
+            "hint": "What the business becomes legally, distinct from its stakeholders."
+        },
+        {
+            "question": "A sole trader has unlimited liability, which means they are personally responsible for any ___ the business incurs.",
+            "answer": "debts",
+            "hint": "Financial obligations that a sole trader must fulfill."
+        },
+        {
+            "question": "A joint venture may be chosen for local ___ and resources sharing in international business.",
+            "answer": "knowledge",
+            "hint": "Understanding of the market and environment provided by a local partner."
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>
