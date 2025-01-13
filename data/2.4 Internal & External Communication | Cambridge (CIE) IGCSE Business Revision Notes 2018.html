@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Internal and External Communication",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "A telephone call is often preferred for conveying messages that need to be ___ and direct.",
+            "answer": "quick",
+            "hint": "Think about the main advantage of a telephone call over emails."
+        },
+        {
+            "question": "Visual methods like videos and charts can simplify complex communications, but they often require ___ to check understanding.",
+            "answer": "feedback",
+            "hint": "What might be limited that needs validating after using visual methods?"
+        },
+        {
+            "question": "Written communication provides a record that can be referred back to in the future, but it may lack ___ expressions and tone.",
+            "answer": "facial",
+            "hint": "What non-verbal cues are missing in written messages?"
+        },
+        {
+            "question": "Small businesses may only afford communication through posters, leaflets, and ___ media.",
+            "answer": "social",
+            "hint": "This platform is often used digitally to reach audiences."
+        },
+        {
+            "question": "Larger businesses often use television and ___ promotional campaigns due to larger budgets.",
+            "answer": "billboard",
+            "hint": "These are large outdoor advertising structures."
+        },
+        {
+            "question": "In order to effectively communicate an announcement, national newspapers can be used for ___ effect.",
+            "answer": "broad",
+            "hint": "Think about the size of the audience that newspapers can reach."
+        },
+        {
+            "question": "Instant messaging services like WhatsApp enable ___ and real-time communication.",
+            "answer": "fast",
+            "hint": "What is the nature of communication using instant messaging services?"
+        },
+        {
+            "question": "Technical messages that include sensitive data may be shared via email to maintain a written ___.",
+            "answer": "record",
+            "hint": "What is kept to ensure proof and history of the communication?"
+        },
+        {
+            "question": "Democratic leaders are likely to prefer ___ communication.",
+            "answer": "two-way",
+            "hint": "What type of communication involves feedback and dialogue?"
+        },
+        {
+            "question": "For quick situational understanding, a quick ___ discussion may be used.",
+            "answer": "verbal",
+            "hint": "What method allows for immediate exchange of spoken words?"
+        },
+        {
+            "question": "Language and jargon can act as a ___ to effective communication.",
+            "answer": "barrier",
+            "hint": "What do we call an obstacle to communication?"
+        },
+        {
+            "question": "Poor internet connectivity is an example of a ___ barrier in communication.",
+            "answer": "technological",
+            "hint": "What type of barrier relates to technical issues and infrastructure?"
+        },
+        {
+            "question": "Cultural differences may affect communication styles and expectations, and should be managed with strong ___.",
+            "answer": "awareness",
+            "hint": "What increases when people are educated about different customs?"
+        },
+        {
+            "question": "An order form serves as a permanent written record that can be placed on ___.",
+            "answer": "file",
+            "hint": "Where would formal documents typically be stored?"
+        },
+        {
+            "question": "Busy work schedules and competing priorities can limit the time available for ___ communication.",
+            "answer": "effective",
+            "hint": "What type of communication aims to achieve successful understanding?"
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>

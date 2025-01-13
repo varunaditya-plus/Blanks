@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Organisation and People Management",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "A tall organisational structure is characterized by multiple levels of management and a long chain of command with a narrow span of ___.",
+            "answer": "control",
+            "hint": "It's a term that refers to the number of subordinates a manager directly oversees."
+        },
+        {
+            "question": "In a flat organisational structure, there are fewer levels of ___.",
+            "answer": "management",
+            "hint": "It's the opposite of tall in terms of hierarchy."
+        },
+        {
+            "question": "Delayering refers to the removal of ___ from a business hierarchy to shorten the chain of command.",
+            "answer": "layers",
+            "hint": "Think of removing a part of a multi-step hierarchy."
+        },
+        {
+            "question": "Owners/Directors in a business are responsible for setting long-term plans and ___ for the business.",
+            "answer": "targets",
+            "hint": "These are specific goals often measured over several years."
+        },
+        {
+            "question": "Managers work to achieve the short and long-term targets set by the ___ or directors.",
+            "answer": "owners",
+            "hint": "They are the top-level people who establish the business goals."
+        },
+        {
+            "question": "Supervisors or Team Leaders take simple decisions like allocating ___ among different employees.",
+            "answer": "jobs",
+            "hint": "Think of tasks or responsibilities given to workers."
+        },
+        {
+            "question": "Delegation can empower workers in decision making, motivating staff as they feel ___ to perform a job well.",
+            "answer": "trusted",
+            "hint": "This is how one feels when someone relies on them to handle a task."
+        },
+        {
+            "question": "Autocratic leaders can make ___ decisions without lengthy discussions.",
+            "answer": "swift",
+            "hint": "Another word for fast or rapid."
+        },
+        {
+            "question": "Reduced employee morale can occur when workers have no ___ into decision-making under autocratic leadership.",
+            "answer": "input",
+            "hint": "It's what employees provide when they contribute ideas or feedback."
+        },
+        {
+            "question": "Laissez-faire leadership allows employees significant autonomy and ___ in making decisions.",
+            "answer": "freedom",
+            "hint": "The ability to act without constraints."
+        },
+        {
+            "question": "Under laissez-faire leadership, communication may suffer as clear ___ is not given.",
+            "answer": "direction",
+            "hint": "It's what leaders provide to guide their team."
+        },
+        {
+            "question": "Trade union members generally receive higher ___ than non-union members.",
+            "answer": "pay",
+            "hint": "The amount received for work completed."
+        },
+        {
+            "question": "Trade unions can influence government decisions in favor of ___ due to their size.",
+            "answer": "workers",
+            "hint": "This group consists of employees represented by unions."
+        },
+        {
+            "question": "With the aid of trade unions, workers benefit from ___ bargaining instead of negotiating individually.",
+            "answer": "collective",
+            "hint": "A term describing actions taken as a group rather than separately."
+        },
+        {
+            "question": "Industrial action by trade unions is often seen as a conflict between workers and ___.",
+            "answer": "management",
+            "hint": "This group consists of the people managing and running the business."
+        },
+        {
+            "question": "Including trade unions in decision-making can be detrimental to effective ___ due to the time taken.",
+            "answer": "competition",
+            "hint": "The environment where businesses strive for the same goals such as profit."
+        },
+        {
+            "question": "Meeting union demands can increase costs of ___, possibly reducing profits.",
+            "answer": "production",
+            "hint": "The activity creating goods or services."
+        },
+        {
+            "question": "Under laissez-faire leadership, team members feel ___ and valued.",
+            "answer": "trusted",
+            "hint": "When someone relies on them to handle responsibilities."
+        },
+        {
+            "question": "In a flat organisational structure, decision-making can be ___ and more efficient.",
+            "answer": "faster",
+            "hint": "The opposite of slow."
+        },
+        {
+            "question": "Autocratic leaders can ___ up decision-making processes, which is crucial in emergencies.",
+            "answer": "speed",
+            "hint": "To increase the rate or velocity of an action."
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>

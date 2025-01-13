@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Motivating Employees",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "According to Maslow's Hierarchy, Barclays Bank supports elite sportspeople by focusing on getting the job done, not having to be present at work at a certain ___.",
+            "answer": "time",
+            "hint": "Think about the scheduling flexibility offered."
+        },
+        {
+            "question": "Taylor's Scientific Management Theory focuses on breaking down complex tasks into simpler ones and standardising work ___.",
+            "answer": "processes",
+            "hint": "This refers to the methods or steps taken to complete tasks."
+        },
+        {
+            "question": "One disadvantage of Taylor's Scientific Management Theory is its limited applicability to roles requiring high levels of creativity, problem-solving, or interpersonal ___.",
+            "answer": "skills",
+            "hint": "What is developed to work better with others?"
+        },
+        {
+            "question": "Herzberg's Motivation Theory consists of two influencers: hygiene factors and ___.",
+            "answer": "motivators",
+            "hint": "These are elements that lead to job satisfaction."
+        },
+        {
+            "question": "A piece rate pay system links output to financial ___.",
+            "answer": "rewards",
+            "hint": "What do employees receive in exchange for their work?"
+        },
+        {
+            "question": "An additional payment given to staff for achieving specific goals is known as a ___.",
+            "answer": "bonus",
+            "hint": "This is usually extra pay for good performance."
+        },
+        {
+            "question": "Promotion usually demands a higher level of responsibility and is often accompanied by higher ___.",
+            "answer": "pay",
+            "hint": "What changes financially with a promotion?"
+        },
+        {
+            "question": "Fringe benefits could include the use of a company car, private healthcare, or a gym ___.",
+            "answer": "membership",
+            "hint": "This is a type of benefit related to health and fitness."
+        },
+        {
+            "question": "Autonomy increases staff's sense of ownership and responsibility, leading to improved ___.",
+            "answer": "productivity",
+            "hint": "This measures how efficiently work is done."
+        },
+        {
+            "question": "Job enrichment involves adding more challenging or meaningful ___.",
+            "answer": "tasks",
+            "hint": "What is added to make a job more engaging?"
+        },
+        {
+            "question": "Teamworking can increase motivation as each member of staff has a role and a shared ___.",
+            "answer": "goal",
+            "hint": "What is everyone aiming to achieve together?"
+        },
+        {
+            "question": "Offering incentives that align with their specific needs can improve staff ___.",
+            "answer": "loyalty",
+            "hint": "This is a measure of how committed someone is to their organization."
+        },
+        {
+            "question": "Employees who feel valued and supported by their employers are more likely to perform at a higher ___.",
+            "answer": "level",
+            "hint": "What indicates the degree of their performance?"
+        },
+        {
+            "question": "Non-financial incentives may include methods that lead to recognition, praise, job satisfaction, or improved ___.",
+            "answer": "work-life balance",
+            "hint": "This balances professional and personal life demands."
+        },
+        {
+            "question": "The opportunity to earn more money may motivate staff to work harder and achieve better ___.",
+            "answer": "results",
+            "hint": "What do employees aim to reach after putting in effort?"
+        },
+        {
+            "question": "Better training and development improves employee performance and job ___.",
+            "answer": "satisfaction",
+            "hint": "What describes how content employees feel with their job?"
+        },
+        {
+            "question": "Specialisation of labour leads to greater efficiency and ___.",
+            "answer": "productivity",
+            "hint": "What is the primary goal for increasing efficiency?"
+        },
+        {
+            "question": "Standard procedures that everyone follows reduce errors and ___.",
+            "answer": "inconsistencies",
+            "hint": "This relates to ensuring uniformity in processes."
+        },
+        {
+            "question": "Workers are usually paid for the completed work as part of a piece rate pay ___.",
+            "answer": "system",
+            "hint": "This describes the structured method of compensation."
+        },
+        {
+            "question": "Commission is a percentage of sales revenue paid to workers who sell products or ___.",
+            "answer": "services",
+            "hint": "This refers to activities like consulting or repairs."
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>

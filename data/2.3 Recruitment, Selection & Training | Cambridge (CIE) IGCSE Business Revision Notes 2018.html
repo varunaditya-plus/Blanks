@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center select-none font-semibold" style="font-family: 'Quicksand';">
+  <div class="h-full w-full p-4">
+    <div id="quiz" class="rounded-lg p-6">
+        <div id="question-container" class="hidden">
+            <div class="flex flex-wrap items-center gap-2 w-full justify-center text-2xl text-center">
+              <p id="question-prefix" class="flex-shrink-0"></p>
+              <input type="text" id="answer-input" class="p-0 border-none w-[10%] bg-gray-100 outline-none text-center" style="border-bottom: 1px solid #000;">
+              <p id="question-suffix" class="flex-shrink-0"></p>
+            </div>
+            <div class="flex items-center justify-center gap-2 opacity-40">
+              <p id="hint-text" class="text-lg text-gray-500 font-medium cursor-pointer"></p>
+            </div>
+        </div>          
+      <div id="results-container" class="mt-6 hidden">
+        <div id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON data -->
+  <script id="data" type="application/json">
+    {
+    "topic": "Recruitment, Selection & Training",
+    "subject": "Business",
+    "questions": [
+        {
+            "question": "When a business hires an employee from outside of the organization, it is known as ___ recruitment.",
+            "answer": "external",
+            "hint": "Opposite of internal."
+        },
+        {
+            "question": "A job specification details the ___ qualifications and characteristics required for a job.",
+            "answer": "essential",
+            "hint": "Opposite of optional."
+        },
+        {
+            "question": "An internal recruitment method does not require ___ for the job position.",
+            "answer": "advertising",
+            "hint": "A way to inform the public about a job opening."
+        },
+        {
+            "question": "A CV is a document that outlines an applicant's career experience and key ___.",
+            "answer": "skills",
+            "hint": "Abilities or expertise."
+        },
+        {
+            "question": "A ___ is a letter that accompanies an application form or CV to explain a candidate's suitability.",
+            "answer": "covering letter",
+            "hint": "A document often sent with a resume outlining the applicant's credentials."
+        },
+        {
+            "question": "Part-time employment is considered to be between 1 and ___ hours a week.",
+            "answer": "30",
+            "hint": "Less than full-time hours."
+        },
+        {
+            "question": "Full-time employees usually work ___ hours or more a week.",
+            "answer": "35",
+            "hint": "A common weekly hours bracket for full-time work."
+        },
+        {
+            "question": "An advantage of part-time contracts is enhancing workforce ___.",
+            "answer": "flexibility",
+            "hint": "The ability to adapt to changing circumstances."
+        },
+        {
+            "question": "Induction training aims to help new employees feel confident in their roles and improve their ___.",
+            "answer": "motivation",
+            "hint": "The drive or encouragement to perform well at work."
+        },
+        {
+            "question": "Off-the-job training may require travel and accommodation, making it potentially ___.",
+            "answer": "expensive",
+            "hint": "High in cost."
+        },
+        {
+            "question": "A business might downsize staff due to new technology replacing the need for certain job ___ .",
+            "answer": "roles",
+            "hint": "Parts of a company that have specific duties and responsibilities."
+        },
+        {
+            "question": "Dismissal may occur immediately or with a given ___ period.",
+            "answer": "notice",
+            "hint": "Advance warning of employment termination."
+        },
+        {
+            "question": "Redundancy usually includes a compensation when a job role is ___ needed.",
+            "answer": "no longer",
+            "hint": "A phrase indicating termination."
+        },
+        {
+            "question": "Employment standards often discuss the implications of minimum ___ laws.",
+            "answer": "wage",
+            "hint": "The lowest payment that can legally be given to workers."
+        },
+        {
+            "question": "___ dismissal occurs when an employee is terminated without a valid reason.",
+            "answer": "Unfair",
+            "hint": "Not justified or just treatment."
+        },
+        {
+            "question": "If workers feel wrongfully terminated, they may take their complaint to a court called a ___.",
+            "answer": "tribunal",
+            "hint": "A formal setting for dispute resolution."
+        },
+        {
+            "question": "Skills and experience gained outside the business can contribute to a business's competitive ___.",
+            "answer": "advantage",
+            "hint": "An edge over competitors."
+        },
+        {
+            "question": "Businesses need to consider whether they can meet an applicant's demands for pay and ___.",
+            "answer": "conditions",
+            "hint": "Terms or circumstances surrounding something."
+        },
+        {
+            "question": "Personal characteristics in job specifications may include an applicant's ability to ___.",
+            "answer": "drive",
+            "hint": "Operate vehicles or machinery."
+        },
+        {
+            "question": "Factors such as lateness or absence data are used to determine who is made ___.",
+            "answer": "redundant",
+            "hint": "A term for employment termination due to a role being excess to requirements."
+        },
+        {
+            "question": "Flexible working includes variations such as full-time, part-time, and ___ hours contracts.",
+            "answer": "zero",
+            "hint": "A term used for a contract with no guaranteed set hours."
+        },
+        {
+            "question": "Internal recruitment often progresses through promotion or ___.",
+            "answer": "redeployment",
+            "hint": "Moving an employee to a different job or department within the business."
+        },
+        {
+            "question": "Training is more practical and ___ to employees' job duties in on-the-job training.",
+            "answer": "relevant",
+            "hint": "Closely connected with the matter at hand."
+        },
+        {
+            "question": "A large volume of applications can be ___ down to determine who to interview.",
+            "answer": "narrowed",
+            "hint": "To make something more concise or focused."
+        },
+        {
+            "question": "Businesses use personality ___ to gauge applicants' suitability for roles.",
+            "answer": "tests",
+            "hint": "Assessments to evaluate characteristics or traits."
+        }
+    ]
+}
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse(document.getElementById('data').textContent);
+        const questionContainer = document.getElementById('question-container');
+        const answerInput = document.getElementById('answer-input');
+        const questionPrefix = document.getElementById('question-prefix');
+        const questionSuffix = document.getElementById('question-suffix');
+        const hintText = document.getElementById('hint-text');
+        const resultsContainer = document.getElementById('results-container');
+        const results = document.getElementById('results');
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let hintState = 0;
+
+        function showQuestion(index) {
+            const question = data.questions[index];
+            const splitQuestion = question.question.split("___");
+
+            questionPrefix.textContent = splitQuestion[0];
+            questionSuffix.textContent = splitQuestion[1] || '';
+            answerInput.value = '';
+            resetHint();
+            questionContainer.classList.remove('hidden');
+        }
+
+        function resetHint() {
+            hintText.textContent = "Need a hint?";
+            hintState = 0;
+            hintText.classList.remove('text-gray-800', 'font-bold');
+            hintText.classList.add('text-gray-500', 'font-medium', 'cursor-pointer');
+        }
+
+        hintText.addEventListener('click', () => {
+            const question = data.questions[currentQuestionIndex];
+            if (hintState === 0) {
+            hintText.textContent = "You sure?";
+            hintState = 1;
+            } else if (hintState === 1) {
+            hintText.textContent = `Hint: ${question.hint}`;
+            hintState = 2;
+            hintText.classList.remove('text-gray-500', 'cursor-pointer');
+            hintText.classList.add('text-gray-800');
+            }
+        });
+
+        answerInput.addEventListener('blur', handleNextQuestion);
+        answerInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+            handleNextQuestion();
+            }
+        });
+
+        function handleNextQuestion() {
+            const userAnswer = answerInput.value.trim();
+
+            if (userAnswer === '') {
+            return;
+            }
+
+            userAnswers[currentQuestionIndex] = userAnswer;
+
+            if (currentQuestionIndex < data.questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+            } else {
+            showResults();
+            }
+        }
+
+        function showResults() {
+            questionContainer.classList.add('hidden');
+            results.innerHTML = '';
+            let correctCount = 0;
+
+            data.questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index] || 'No answer';
+            const isCorrect = userAnswer === q.answer;
+
+            const resultItem = document.createElement('div');
+            resultItem.className = 'mb-2';
+            resultItem.innerHTML = `
+                <p>Q${index + 1}: ${q.question.replace('___', `<span class='${isCorrect ? 'text-green-500' : 'text-red-500'}'>${userAnswer}</span>`)}</p>
+                <p>Correct answer: <span class="text-blue-500">${q.answer}</span></p>
+            `;
+
+            results.appendChild(resultItem);
+            if (isCorrect) correctCount++;
+            });
+
+            const score = document.createElement('p');
+            score.className = 'mt-4 font-bold';
+            score.textContent = `You got ${correctCount} out of ${data.questions.length} correct.`;
+            results.appendChild(score);
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        showQuestion(currentQuestionIndex);
+    });
+  </script>
+</body>
+</html>
